@@ -1,0 +1,104 @@
+/* ==========================================================================
+   ESTILOS DE IMPRESIÓN Y PDF - PLANILLA OFICIAL DE GUARDIAS
+   ========================================================================== */
+
+@page {
+    size: A4 landscape;
+    margin: 10mm 8mm;
+}
+
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 10pt;
+        height: auto !important;
+    }
+
+    /* Ocultar elementos de navegación y controles de pantalla */
+    .app-header,
+    .cuadrante-toolbar,
+    .cuadrante-legend,
+    .btn,
+    .modal-overlay,
+    .toast-container,
+    .app-nav,
+    .stats-cards-grid,
+    .table-filters-bar,
+    #tab-personal,
+    #tab-puestos,
+    #tab-balance,
+    #tab-feriados {
+        display: none !important;
+    }
+
+    #app-container, .app-main, #tab-cuadrante {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+    }
+
+    /* Encabezado Institucional de Impresión */
+    #tab-cuadrante::before {
+        content: "REPÚBLICA ARGENTINA - PLANILLA DE SERVICIO Y ROL DE GUARDIAS";
+        display: block;
+        font-size: 14pt;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #000000;
+        padding-bottom: 6px;
+    }
+
+    .matrix-wrapper {
+        box-shadow: none !important;
+        border: none !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .matrix-table {
+        width: 100% !important;
+        border: 1px solid #000000 !important;
+        page-break-inside: auto;
+    }
+
+    .matrix-table th, .matrix-table td {
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+        background: #ffffff !important;
+        padding: 4px 6px !important;
+        font-size: 8pt !important;
+    }
+
+    .matrix-table th {
+        background-color: #e5e7eb !important;
+        color: #000000 !important;
+        font-weight: bold;
+    }
+
+    .th-day-weekend, .th-day-holiday {
+        background-color: #d1d5db !important;
+    }
+
+    .slot-person-name {
+        color: #000000 !important;
+        font-size: 8pt !important;
+    }
+
+    .slot-person-rank {
+        color: #374151 !important;
+        font-size: 7pt !important;
+    }
+
+    .slot-badge {
+        background: transparent !important;
+        border: none !important;
+        min-height: auto !important;
+        padding: 2px !important;
+    }
+}
+

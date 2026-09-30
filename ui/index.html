@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión y Generación Equitativa de Guardias</title>
+    <!-- Estilos principales e impresión -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/print.css" media="print">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <div id="app-container">
+        
+        <!-- HEADER PRINCIPAL -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="app-logo">
+                    <div class="logo-shield">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="M12 8v4"/>
+                            <path d="M12 16h.01"/>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <span class="logo-title">SISTEMA DE GUARDIAS</span>
+                        <span class="logo-subtitle">Planificación & Equidad Operativa • República Argentina</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navegación por pestañas -->
+            <nav class="app-nav">
+                <button class="nav-tab active" data-tab="cuadrante">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Cuadrante</span>
+                </button>
+                <button class="nav-tab" data-tab="personal">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Personal y Roles</span>
+                </button>
+                <button class="nav-tab" data-tab="puestos">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    <span>Puestos y Dotación</span>
+                </button>
+                <button class="nav-tab" data-tab="balance">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    <span>Balance y Equidad</span>
+                </button>
+                <button class="nav-tab" data-tab="feriados">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 6 12 12 16 14"></polygon></svg>
+                    <span>Feriados Argentina</span>
+                </button>
+            </nav>
+
+            <div class="header-right">
+                <button class="btn btn-danger-outline" id="btn-open-clear" title="Eliminar Guardias por Fecha" style="margin-right: 10px;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2"></path></svg>
+                    <span>Eliminar Guardias</span>
+                </button>
+                <button class="btn btn-primary btn-sparkle" id="btn-open-generator">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    <span>Generar Guardia</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="app-main">
+            
+            <!-- PESTAÑA 1: CUADRANTE DE GUARDIAS -->
+            <section id="tab-cuadrante" class="tab-content active">
+                <div class="cuadrante-toolbar">
+                    <div class="toolbar-left">
+                        <div class="horizon-selector">
+                            <span class="horizon-label">Horizonte:</span>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline horizon-btn" data-days="7">1 Semana</button>
+                                <button class="btn btn-sm btn-outline horizon-btn" data-days="14">2 Semanas</button>
+                                <button class="btn btn-sm btn-outline horizon-btn" data-days="21">3 Semanas</button>
+                                <button class="btn btn-sm btn-outline horizon-btn active" data-days="month">Mes Completo</button>
+                            </div>
+                        </div>
+
+                        <div class="date-navigator">
+                            <button class="btn btn-icon" id="btn-prev-period" title="Período Anterior">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </button>
+                            <input type="month" id="cuadrante-month-picker" class="input-date-custom">
+                            <button class="btn btn-icon" id="btn-next-period" title="Siguiente Período">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </button>
+                            <button class="btn btn-sm btn-ghost" id="btn-current-period">Hoy</button>
+                        </div>
+                    </div>
+
+                    <div class="toolbar-center">
+                        <div class="person-highlighter">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <select id="select-highlight-person" class="select-clean">
+                                <option value="">Resaltar integrante...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="toolbar-right">
+                        <button class="btn btn-outline" id="btn-export-excel" title="Exportar planilla a Excel">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <span>Excel</span>
+                        </button>
+                        <button class="btn btn-outline" id="btn-export-csv" title="Exportar CSV">
+                            <span>CSV</span>
+                        </button>
+                        <button class="btn btn-outline" id="btn-print-schedule" title="Imprimir o Guardar como PDF">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                            <span>Imprimir / PDF</span>
+                        </button>
+                        <button class="btn btn-icon btn-outline" id="btn-refresh-matrix" title="Actualizar">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Barra de Leyenda -->
+                <div class="cuadrante-legend">
+                    <div class="legend-item">
+                        <span class="legend-badge badge-weekly"></span> 
+                        Servicio Semanal
+                        <select id="select-week-start" class="select-clean" style="margin-left: 5px; padding: 2px 5px; font-size: 0.85em; background-color: var(--bg-tertiary); color: var(--text-secondary); border-radius: 4px; border: 1px solid var(--border-color);">
+                            <option value="0">Lunes a Domingo</option>
+                            <option value="1">Martes a Lunes</option>
+                            <option value="2">Miércoles a Martes</option>
+                            <option value="3" selected>Jueves a Miércoles</option>
+                            <option value="4">Viernes a Jueves</option>
+                            <option value="5">Sábado a Viernes</option>
+                            <option value="6">Domingo a Sábado</option>
+                        </select>
+                    </div>
+                    <div class="legend-item"><span class="legend-badge badge-weekday"></span> Día Hábil (Lunes a Viernes)</div>
+                    <div class="legend-item"><span class="legend-badge badge-weekend"></span> Fin de Semana (Sáb / Dom)</div>
+                    <div class="legend-item"><span class="legend-badge badge-holiday"></span> Feriado Nacional de Argentina</div>
+                    <div class="legend-item"><span class="legend-badge badge-manual-dot"></span> Reemplazo Manual (*)</div>
+                    <div class="legend-info">💡 <em>Haz clic en cualquier celda para asignar o reemplazar. En puestos semanales se asigna el ciclo completo.</em></div>
+                </div>
+
+                <!-- Contenedor con scroll para la Matriz -->
+                <div class="matrix-wrapper">
+                    <div id="schedule-matrix-container" class="matrix-container">
+                        <!-- Renderizado dinámico vía JavaScript -->
+                        <div class="loading-spinner">Cargando cuadrante de guardias...</div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- PESTAÑA 2: GESTIÓN DE PERSONAL Y ROLES -->
+            <section id="tab-personal" class="tab-content">
+                <div class="panel-header">
+                    <div class="panel-header-info">
+                        <h2>Personal y Contadores de Guardias</h2>
+                        <p class="panel-subtitle">Administra los integrantes, sus roles permitidos y consulta las guardias realizadas en días de semana y fines de semana/feriados.</p>
+                    </div>
+                    <div class="panel-header-actions" style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-outline" id="btn-add-role">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>Nuevo Rol</span>
+                        </button>
+                        <button class="btn btn-primary" id="btn-add-person">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>Nuevo Integrante</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tarjetas de resumen estadístico superior -->
+                <div class="stats-cards-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                        </div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-total-personnel">0</span>
+                            <span class="stat-label">Personal Activo</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+                        </div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-avg-guards">0.0</span>
+                            <span class="stat-label">Promedio Guardias / Mes</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-amber">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                        </div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-total-weekend-guards">0</span>
+                            <span class="stat-label">Guardias Finde/Feriado (Mes)</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        </div>
+                        <div class="stat-data">
+                            <span class="stat-value" id="stat-equity-score">100%</span>
+                            <span class="stat-label">Índice de Equidad</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros de la tabla -->
+                <div class="table-filters-bar">
+                    <div class="search-input-wrapper">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="filter-person-search" placeholder="Buscar por nombre o DNI..." class="input-search">
+                    </div>
+                    <select id="filter-person-role" class="select-clean">
+                        <option value="">Todos los roles</option>
+                    </select>
+                    <select id="filter-person-status" class="select-clean">
+                        <option value="all">Todos los estados</option>
+                        <option value="active" selected>Solo Activos</option>
+                        <option value="inactive">Inactivos / Licencia</option>
+                    </select>
+                </div>
+
+                <!-- Tabla de Personal -->
+                <div class="table-responsive">
+                    <table class="data-table" id="personnel-table">
+                        <thead>
+                            <tr>
+                                <th>Integrante</th>
+                                <th>Jerarquía / Grado</th>
+                                <th>Roles Permitidos</th>
+                                <th class="text-center">Semanas (Mes)</th>
+                                <th class="text-center">Días Hábiles (Mes)</th>
+                                <th class="text-center">Finde / Feriado (Mes)</th>
+                                <th class="text-center">Total Guardias Mes</th>
+                                <th class="text-center">Histórico Total</th>
+                                <th class="text-center">Equidad</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="personnel-table-body">
+                            <!-- Filas generadas dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- PESTAÑA 3: PUESTOS Y DOTACIÓN DIARIA -->
+            <section id="tab-puestos" class="tab-content">
+                <div class="panel-header">
+                    <div class="panel-header-info">
+                        <h2>Configuración de Puestos y Dotación Diaria</h2>
+                        <p class="panel-subtitle">Define los puestos de guardia, el rol requerido para cada uno y cuánta dotación de personal se necesita en cada día de la semana.</p>
+                    </div>
+                    <div class="panel-header-actions">
+                        <button class="btn btn-primary" id="btn-add-position">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>Nuevo Puesto</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="puestos-grid-layout">
+                    <!-- Lista de Puestos de Guardia -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3>Puestos de Guardia Activos</h3>
+                            <span class="badge badge-neutral" id="positions-count-badge">0 Puestos</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="positions-list" id="positions-list-container">
+                                <!-- Lista dinámica -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dotación Semanal por Día -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Dotación Semanal Requerida</h3>
+                                <p class="card-subtitle">Activa o desactiva qué puestos cubren la guardia según el día de la semana.</p>
+                            </div>
+                            <button class="btn btn-sm btn-success" id="btn-save-weekly-template">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                                <span>Guardar Plantilla</span>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="weekly-template-container" id="weekly-template-container">
+                                <!-- Matriz de días (Lunes a Domingo) vs Puestos -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- PESTAÑA 4: BALANCE Y EQUIDAD -->
+            <section id="tab-balance" class="tab-content">
+                <div class="panel-header">
+                    <div class="panel-header-info">
+                        <h2>Análisis de Equidad y Balance Mensual</h2>
+                        <p class="panel-subtitle">Verifica visualmente la distribución de guardias para asegurar que todos los integrantes cumplan cargas equitativas.</p>
+                    </div>
+                    <div class="panel-header-actions">
+                        <select id="balance-month-select" class="select-clean"></select>
+                    </div>
+                </div>
+
+                <div class="balance-grid">
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3>Distribución de Guardias por Integrante</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="balance-chart-container" class="balance-bars-list">
+                                <!-- Barras comparativas de guardias -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3>Compensación Histórica</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-box-styled">
+                                <h4>⚖️ Principio de Arrastre de Equidad</h4>
+                                <p>El sistema contabiliza de forma acumulativa las guardias realizadas en meses previos. Si algún integrante realizó una guardia de más o de menos en el período anterior, el algoritmo le asignará prioridad inversa en la siguiente generación mensual para balancear el acumulado.</p>
+                            </div>
+                            <div id="equity-details-table-container">
+                                <!-- Tabla de balance acumulado -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- PESTAÑA 5: FERIADOS Y CALENDARIO ARGENTINA -->
+            <section id="tab-feriados" class="tab-content">
+                <div class="panel-header">
+                    <div class="panel-header-info">
+                        <h2>Calendario de Feriados de la República Argentina</h2>
+                        <p class="panel-subtitle">El sistema detecta automáticamente los feriados nacionales oficiales (inamovibles, trasladables y puentes turísticos). También puedes agregar feriados institucionales.</p>
+                    </div>
+                    <div class="panel-header-actions">
+                        <select id="holiday-year-select" class="select-clean">
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                        <button class="btn btn-primary" id="btn-add-custom-holiday">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>Agregar Feriado Institucional</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table" id="holidays-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Día</th>
+                                <th>Denominación del Feriado</th>
+                                <th>Tipo</th>
+                                <th class="text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="holidays-table-body">
+                            <!-- Feriados dinámicos -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- MODALES Y DIÁLOGOS INTERACTIVOS            -->
+    <!-- ========================================== -->
+
+    <!-- MODAL: GENERADOR DE GUARDIAS -->
+    <div class="modal-overlay" id="modal-generator">
+        <div class="modal-container modal-md">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    <h3>Generar Asignación Equitativa de Guardias</h3>
+                </div>
+                <button class="modal-close" data-close="modal-generator">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-generator">
+                    <div class="form-group">
+                        <label class="form-label">Período de Planificación:</label>
+                        <div class="radio-cards-grid">
+                            <label class="radio-card">
+                                <input type="radio" name="gen-horizon" value="7" checked>
+                                <div class="radio-card-content">
+                                    <span class="radio-title">1 Semana</span>
+                                    <span class="radio-desc">7 Días</span>
+                                </div>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="gen-horizon" value="14">
+                                <div class="radio-card-content">
+                                    <span class="radio-title">2 Semanas</span>
+                                    <span class="radio-desc">14 Días</span>
+                                </div>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="gen-horizon" value="21">
+                                <div class="radio-card-content">
+                                    <span class="radio-title">3 Semanas</span>
+                                    <span class="radio-desc">21 Días</span>
+                                </div>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="gen-horizon" value="month">
+                                <div class="radio-card-content">
+                                    <span class="radio-title">1 Mes Completo</span>
+                                    <span class="radio-desc">Mes Calendario</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label class="form-label">Fecha de Inicio:</label>
+                            <input type="date" id="gen-start-date" class="form-input" required>
+                        </div>
+                        <div class="form-group col-6">
+                            <label class="form-label">Fecha de Fin:</label>
+                            <input type="date" id="gen-end-date" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="gen-preserve-manual" checked>
+                            <span class="checkmark"></span>
+                            <span>Preservar cambios y reemplazos manuales preexistentes</span>
+                        </label>
+                    </div>
+
+                    <div class="generator-preview-box">
+                        <div class="preview-item">
+                            <span class="preview-label">Días a cubrir:</span>
+                            <span class="preview-val" id="preview-days-count">7 días</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="preview-label">Personal disponible:</span>
+                            <span class="preview-val" id="preview-active-personnel">0 integrantes</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="preview-label">Feriados en el período:</span>
+                            <span class="preview-val" id="preview-holidays-count">0</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" data-close="modal-generator">Cancelar</button>
+                <button class="btn btn-primary btn-sparkle" id="btn-run-generation">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    <span>Generar y Balancear Turnos</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ELIMINAR GUARDIAS -->
+    <div class="modal-overlay" id="modal-clear">
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2-2v2"></path></svg>
+                    <h3>Eliminar Guardias Generadas</h3>
+                </div>
+                <button class="modal-close" data-close="modal-clear">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-clear">
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label class="form-label">Desde Fecha:</label>
+                            <input type="date" id="clear-start-date" class="form-input" required>
+                        </div>
+                        <div class="form-group col-6">
+                            <label class="form-label">Hasta Fecha:</label>
+                            <input type="date" id="clear-end-date" class="form-input" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" data-close="modal-clear">Cancelar</button>
+                <button class="btn btn-danger" id="btn-run-clear">Eliminar Guardias</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL: REEMPLAZO MANUAL / ACCIÓN DE CELDA -->
+    <div class="modal-overlay" id="modal-cell-action">
+        <div class="modal-container modal-md">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+                    <h3>Asignación y Reemplazo de Guardia</h3>
+                </div>
+                <button class="modal-close" data-close="modal-cell-action">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="cell-context-banner" id="cell-context-banner">
+                    <!-- Información de fecha, puesto y rol requerido -->
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Seleccionar Integrante para este puesto:</label>
+                    <div class="candidate-selector-list" id="candidate-selector-list">
+                        <!-- Lista de candidatos con roles y contadores de guardias -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger-outline" id="btn-cell-unassign">Dejar Sin Asignar</button>
+                <button class="btn btn-outline" data-close="modal-cell-action">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL: AGREGAR / EDITAR PERSONAL -->
+    <div class="modal-overlay" id="modal-person">
+        <div class="modal-container modal-md">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <h3 id="modal-person-title">Nuevo Integrante</h3>
+                </div>
+                <button class="modal-close" data-close="modal-person">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-person">
+                    <input type="hidden" id="person-id">
+                    
+                    <div class="form-row">
+                        <div class="form-group col-8">
+                            <label class="form-label">Apellido y Nombre <span class="req">*</span>:</label>
+                            <input type="text" id="person-name" class="form-input" placeholder="Ej: Gómez, Juan Carlos" required>
+                        </div>
+                        <div class="form-group col-4">
+                            <label class="form-label">DNI / Legajo:</label>
+                            <input type="text" id="person-dni" class="form-input" placeholder="Ej: 35.123.456">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label class="form-label">Jerarquía / Grado:</label>
+                            <input type="text" id="person-rank" class="form-input" placeholder="Ej: Sargento, Soldado Vol., etc.">
+                        </div>
+                        <div class="form-group col-6">
+                            <label class="form-label">Estado:</label>
+                            <select id="person-active" class="form-input">
+                                <option value="1">Activo (Disponible para guardias)</option>
+                                <option value="0">Inactivo / En Licencia Médica</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Roles y Puestos que es apto para desempeñar <span class="req">*</span>:</label>
+                        <p class="form-hint">Selecciona todos los roles que este integrante está capacitado para cubrir (ej. Juan puede ser Sargento o Soldado):</p>
+                        <div class="roles-checkbox-grid" id="person-roles-container">
+                            <!-- Checkboxes dinámicos de roles -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Notas / Observaciones:</label>
+                        <textarea id="person-notes" class="form-input" rows="2" placeholder="Observaciones especiales o preferencias..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" data-close="modal-person">Cancelar</button>
+                <button class="btn btn-primary" id="btn-save-person">Guardar Integrante</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL: AGREGAR / EDITAR PUESTO -->
+    <div class="modal-overlay" id="modal-position">
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon></svg>
+                    <h3 id="modal-position-title">Nuevo Puesto de Guardia</h3>
+                </div>
+                <button class="modal-close" data-close="modal-position">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-position">
+                    <input type="hidden" id="position-id">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Puesto <span class="req">*</span>:</label>
+                        <input type="text" id="position-name" class="form-input" placeholder="Ej: Centinela Acceso Principal" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Servicio <span class="req">*</span>:</label>
+                        <select id="position-is-weekly" class="form-input">
+                            <option value="0">Guardia Diaria (Rotación diaria estándar)</option>
+                            <option value="1">Servicio Semanal (Semana completa de Jueves a Miércoles)</option>
+                        </select>
+                        <p class="form-hint">Los puestos semanales duran 7 días (jueves a miércoles) y eximen al asignado de guardias diarias en el mes.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Rol Requerido <span class="req">*</span>:</label>
+                        <select id="position-role" class="form-input" required>
+                            <!-- Opciones de roles -->
+                        </select>
+                        <p class="form-hint">Solo los integrantes que tengan este rol podrán ser asignados a este puesto.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Orden de Visualización:</label>
+                        <input type="number" id="position-order" class="form-input" value="1" min="1">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" data-close="modal-position">Cancelar</button>
+                <button class="btn btn-primary" id="btn-save-position">Guardar Puesto</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL: AGREGAR FERIADO PERSONALIZADO -->
+    <div class="modal-overlay" id="modal-holiday">
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <h3>Agregar Feriado Institucional</h3>
+                </div>
+                <button class="modal-close" data-close="modal-holiday">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-holiday">
+                    <div class="form-group">
+                        <label class="form-label">Fecha del Feriado / Asueto <span class="req">*</span>:</label>
+                        <input type="date" id="holiday-date" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Denominación o Motivo <span class="req">*</span>:</label>
+                        <input type="text" id="holiday-name" class="form-input" placeholder="Ej: Aniversario de la Unidad / Asueto Patronal" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" data-close="modal-holiday">Cancelar</button>
+                <button class="btn btn-primary" id="btn-save-custom-holiday">Guardar Feriado</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL: AGREGAR ROL -->
+    <div class="modal-overlay" id="modal-role">
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <h3>Nuevo Rol / Especialidad</h3>
+                </div>
+                <button class="modal-close" data-close="modal-role">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-role">
+                    <div class="form-group">
+                        <label class="form-label">Código (ej: enfermero) <span class="req">*</span>:</label>
+                        <input type="text" id="role-code" class="form-input" required placeholder="Código interno (sin espacios)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Rol <span class="req">*</span>:</label>
+                        <input type="text" id="role-name" class="form-input" required placeholder="Ej: Enfermero / Sanidad">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción:</label>
+                        <textarea id="role-desc" class="form-input" rows="2" placeholder="Opcional"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" data-close="modal-role">Cancelar</button>
+                <button class="btn btn-primary" id="btn-save-role">Guardar Rol</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR DE TOASTS Y NOTIFICACIONES -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- SCRIPTS JAVASCRIPT MODULARES -->
+    <script src="js/api.js"></script>
+    <script src="js/schedule_matrix.js"></script>
+    <script src="js/personnel.js"></script>
+    <script src="js/positions.js"></script>
+    <script src="js/holidays.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

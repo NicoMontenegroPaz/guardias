@@ -1,0 +1,47 @@
+# ================================================
+# .gitignore para Sistema de Gestion de Guardias
+# ================================================
+
+# Base de datos local (contiene datos privados del personal)
+guardias.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Carpetas generadas por PyInstaller (contienen rutas del sistema del desarrollador)
+build/
+dist/
+
+# Acceso directo generado localmente (rutas absolutas del equipo del desarrollador)
+*.lnk
+
+# Archivo de especificacion de PyInstaller (puede contener rutas del sistema)
+*.spec
+
+# Cache de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Archivos de entorno virtual
+venv/
+env/
+.env
+*.env
+
+# Archivos de sistema Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Archivos temporales del editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Logs de compilacion de PyInstaller
+build/*/warn-*.txt
+build/*/xref-*.html
